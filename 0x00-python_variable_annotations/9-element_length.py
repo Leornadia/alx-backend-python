@@ -1,21 +1,8 @@
 #!/usr/bin/env python3
-"""
-This module provides a function to calculate the length of each element in a
-list of sequences.
-"""
-from typing import Iterable, Sequence, List, Tuple
 
+element_length = __import__('9-element_length').element_length
 
-def element_length(lst: Iterable[Sequence]) -> List[Tuple[Sequence, int]]:
-    """
-    Calculate the length of each element in a list of sequences.
-
-    Args:
-        lst (Iterable[Sequence]): The list of sequences.
-
-    Returns:
-        List[Tuple[Sequence, int]]: A list of tuples, where each tuple contains
-                                     a sequence from the input list and its length.
-    """
-    return [(i, len(i)) for i in lst]
+print(element_length.__annotations__)
+lst = ["hello", [1, 2, 3], ("a", "b", "c")]
+print(element_length(lst))
 
