@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
-"""This module contains a function to create a multiplier function."""
-
+"""
+This module provides a function that returns a multiplier function.
+"""
 from typing import Callable
+
 
 def make_multiplier(multiplier: float) -> Callable[[float], float]:
     """
-    Creates a function that multiplies a number by the given multiplier.
+    Take a float multiplier as argument and return a function that multiplies
+    a float by multiplier.
 
     Args:
-        multiplier (float): The multiplier value.
+        multiplier (float): The multiplier to be used in the returned function.
 
     Returns:
-        Callable[[float], float]: A function that takes a float as input and
-                                 returns the result of multiplying it by
-                                 the multiplier.
+        Callable[[float], float]: A function that multiplies a float by the
+                                  input multiplier.
     """
-
-    def inner_multiplier(number: float) -> float:
-        """
-        Multiplies the input number by the captured multiplier.
-        """
-        return number * multiplier
-
-    return inner_multiplier
-
+    def multiplier_function(n: float) -> float:
+        return n * multiplier
+    return multiplier_function
