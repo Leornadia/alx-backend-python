@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
+"""This module contains a function to create a key-value tuple."""
 
-from typing import Union, Tuple
+from typing import Tuple, Union
 
 def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
-    """
-    Create a tuple from a string and the square of a number.
+    """Creates a key-value tuple.
 
     Args:
-        k (str): A string to be used as the first element of the tuple.
-        v (Union[int, float]): A number (int or float) to be squared.
+        k (str): The key (string).
+        v (Union[int, float]): The value (either an integer or a float).
 
     Returns:
-        Tuple[str, float]: A tuple where the first element is the input string
-        and the second element is the square of the input number as a float.
+        Tuple[str, float]: A tuple containing the key (str) and
+                           the square of the value as a float.
     """
-    return (k, float(v ** 2))
+    return (k, float(v**2))
+
