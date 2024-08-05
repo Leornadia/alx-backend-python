@@ -1,26 +1,53 @@
 #!/usr/bin/env python3
+
 import asyncio
-from typing import List
+from random import uniform
 
-wait_random = __import__('0-basic_async_syntax').wait_random
-
-async def wait_n(n: int, max_delay: int) -> List[float]:
+async def wait_random(max_delay=10):
     """
-    Spawns wait_random n times with the specified max_delay.
-    Returns the list of all the delays (float values) in ascending order.
-
+    Asynchronous coroutine that waits for a random delay
+    between 0 and max_delay (inclusive) and returns that delay.
+    
     Args:
-    n (int): Number of times to spawn wait_random.
-    max_delay (int): Maximum delay in seconds.
-
+        max_delay (int): The maximum delay time in seconds. Default is 10.
+    
     Returns:
-    List[float]: List of delays in ascending order.
+        float: A random float value representing the delay.
     """
-    delays = []
-    async def append_delay():
-        delay = await wait_random(max_delay)
-        delays.append(delay)
-        return delay
+    delay = uniform(0, max_delay)
+    await asyncio.sleep(delay)
+    return delay
 
-    await asyncio.gather(*(append_delay() for _ in range(n)))
-    return sorted(delays)
+async def wait_n(n, max_delay):
+    """
+    Asynchronous coroutine that spawns wait_random n times
+    with the specified max_delay and returns the list of delays
+    sorted in ascending order.
+    
+    Args:
+        n (int): The number of times to call wait_random.
+        max_delay (int): The maximum delay time for each call.
+    
+    Returns:
+        List[float]: A list of delays in ascending order.
+    """
+    # Create a list of tasks for wait_random
+    tasks = [wait_random(max_delay) for _ in range(n)]
+    
+    # Await the completion of all tasks
+    delays = await asyncio.gather(*tasks)
+    
+    # Insert delays in a new list to maintain order without using sort()
+    sorted_delays = []
+    for delay in delays:
+        # Insert the delay into the sorted list
+        inserted = False
+        for i in range(len(sorted_delays)):
+            if delay < sorted_delays[i]:
+                sorted_delays.insert(i, delay)
+                inserted = True
+                break
+        if not inserted:
+            sorted_delays.append(delay)  # Add to the end if it's the largest
+    
+    return sorted_delays
