@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
+"""Asynchronous coroutine module."""
 
 import asyncio
+import random
 
-wait_random = __import__('0-basic_async_syntax').wait_random
+async def wait_random(max_delay: int = 10) -> float:
+    """
+    Waits for a random delay between 0 and max_delay seconds.
 
-async def main():
-    """Print wait_random return values."""
-    print(await wait_random())
-    print(await wait_random(5))
-    print(await wait_random(15))
+    Args:
+        max_delay (int, optional): Maximum delay in seconds. Defaults to 10.
 
-asyncio.run(main()) 
+    Returns:
+        float: The actual delay time.
+    """
+    delay_time = random.uniform(0, max_delay)
+    await asyncio.sleep(delay_time)
+    return delay_time
+
+if __name__ == "__main__":
+    asyncio.run(wait_random())
