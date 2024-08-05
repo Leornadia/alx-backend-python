@@ -1,39 +1,26 @@
 #!/usr/bin/env python3
-"""
-Module that contains the wait_n coroutine
-"""
 import asyncio
-import random
 from typing import List
 
-
-async def wait_random(max_delay: int = 10) -> float:
-    """
-    Waits for a random delay between 0 and max_delay (inclusive).
-
-    Args:
-        max_delay (int): The maximum delay in seconds. Defaults to 10.
-
-    Returns:
-        float: The random delay in seconds.
-    """
-    delay = random.uniform(0, max_delay)
-    await asyncio.sleep(delay)
-    return delay
-
+wait_random = __import__('0-basic_async_syntax').wait_random
 
 async def wait_n(n: int, max_delay: int) -> List[float]:
     """
     Spawns wait_random n times with the specified max_delay.
+    Returns the list of all the delays (float values) in ascending order.
 
     Args:
-        n (int): The number of times to spawn wait_random.
-        max_delay (int): The maximum delay in seconds for each wait_random call.
+    n (int): Number of times to spawn wait_random.
+    max_delay (int): Maximum delay in seconds.
 
     Returns:
-        List[float]: A list of all the delays in ascending order.
+    List[float]: List of delays in ascending order.
     """
     delays = []
-    for _ in range(n):
-        delays.append(await wait_random(max_delay))
-    return delays
+    async def append_delay():
+        delay = await wait_random(max_delay)
+        delays.append(delay)
+        return delay
+
+    await asyncio.gather(*(append_delay() for _ in range(n)))
+    return sorted(delays)
