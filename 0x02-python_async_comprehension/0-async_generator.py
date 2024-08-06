@@ -1,30 +1,21 @@
 #!/usr/bin/env python3
-"""
-This module contains an asynchronous generator that yields random numbers.
-"""
-
+"""Async Generator module."""
 import asyncio
 import random
 from typing import AsyncGenerator
 
 async def async_generator() -> AsyncGenerator[float, None]:
     """
-    Coroutine that asynchronously generates 10 random numbers between 0 and 10.
-    Each number is generated after a 1-second delay.
+    Asynchronously yields 10 random numbers between 0 and 10.
+
+    Each number is generated concurrently after waiting for 1 second.
     """
-    for _ in range(10):
+
+    async def generate_random_number():
+        """Helper coroutine to generate a random number after 1 second."""
         await asyncio.sleep(1)
-        yield random.uniform(0, 10)
+        return random.uniform(0, 10)
 
-# The following code is for testing the async_generator function
-# This should not be included in the actual module file
-
-if __name__ == "__main__":
-    async def print_yielded_values():
-        result = []
-        async for i in async_generator():
-            result.append(i)
-        print(result)
-
-    asyncio.run(print_yielded_values())
-
+    tasks = [asyncio.create_task(generate_random_number()) for _ in range(10)]
+    for task in asyncio.as_completed(tasks):
+        yield await task
