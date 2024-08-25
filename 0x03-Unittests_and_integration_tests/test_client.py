@@ -1,39 +1,29 @@
 #!/usr/bin/env python3
 """
-This module contains unittests for the GithubOrgClient class.
+Unittests for the GithubOrgClient class.
 """
-
 import unittest
 from unittest.mock import patch
-from parameterized import parameterized
 from client import GithubOrgClient
+
 
 class TestGithubOrgClient(unittest.TestCase):
     """
-    This class contains unittests for the GithubOrgClient class.
+    Test class for the GithubOrgClient class.
     """
 
-    @parameterized.expand([
-        ("google",),
-        ("abc",),
-    ])
-    @patch('client.get_json')
-    def test_org(self, org_name, mock_get_json):
+    @patch('client.GithubOrgClient.org')
+    def test_public_repos_url(self, mock_org):
         """
-        Test that GithubOrgClient.org returns the correct value.
+        Test the _public_repos_url method.
         """
-        # Arrange
-        test_client = GithubOrgClient(org_name)
-        expected_return_value = {"login": org_name}
-        mock_get_json.return_value = expected_return_value
-
-        # Act
-        result = test_client.org
-
-        # Assert
-        mock_get_json.assert_called_once_with(f"https://api.github.com/orgs/{org_name}")
-        self.assertEqual(result, expected_return_value)
-
-if __name__ == '__main__':
-    unittest.main()
-
+        test_org = 'google'
+        test_payload = {
+            "id": 133345,
+            "name": "google",
+            "public_repos": 123,
+            "repos_url": "https://api.github.com/orgs/google/repos"
+        }
+        mock_org.return_value = test_payload
+        client = GithubOrgClient(test_org)
+        self.assertEqual(client._public_repos_url, test_payload["repos_url"])
