@@ -4,7 +4,7 @@ This module contains unittests for the GithubOrgClient class.
 """
 
 import unittest
-from unittest.mock import patch, PropertyMock
+from parameterized import parameterized
 from client import GithubOrgClient
 
 
@@ -13,32 +13,20 @@ class TestGithubOrgClient(unittest.TestCase):
     This class contains unittests for the GithubOrgClient class.
     """
 
-    @patch('client.get_json')
-    def test_public_repos(self, mock_get_json):
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+        ({"license": None}, "my_license", False),
+        ({}, "my_license", False),
+    ])
+    def test_has_license(self, repo, license_key, expected):
         """
-        Test that GithubOrgClient.public_repos returns the correct list of repos
-        and that get_json and _public_repos_url are called appropriately.
+        Test that GithubOrgClient.has_license returns the correct boolean
+        indicating whether a repository has a specified license.
         """
-        # Arrange
-        test_payload = [
-            {"name": "repo1"},
-            {"name": "repo2"},
-            {"name": "repo3"}
-        ]
-        mock_get_json.return_value = test_payload
-
-        with patch('client.GithubOrgClient._public_repos_url', new_callable=PropertyMock) as mock_public_repos_url:
-            mock_public_repos_url.return_value = 'https://api.github.com/orgs/test_org/repos'
-            client = GithubOrgClient('test_org')
-
-            # Act
-            result = client.public_repos()
-
-            # Assert
-            expected = ['repo1', 'repo2', 'repo3']
-            self.assertEqual(result, expected)
-            mock_get_json.assert_called_once_with('https://api.github.com/orgs/test_org/repos')
-            mock_public_repos_url.assert_called_once()
+        client = GithubOrgClient('test_org')
+        result = client.has_license(repo, license_key)
+        self.assertEqual(result, expected)
 
 
 if __name__ == '__main__':
