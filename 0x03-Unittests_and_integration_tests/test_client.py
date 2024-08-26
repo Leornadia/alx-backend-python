@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+This module contains integration tests for the GithubOrgClient class.
+"""
+
 import unittest
 from unittest import mock
 from client import GithubOrgClient
@@ -33,5 +37,32 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         repos = client.public_repos("apache-2.0")
         self.assertEqual(repos, apache2_repos)
 
-# You can add additional test methods below
+    def test_public_repos_no_license(self):
+        """Test public_repos method without license filter."""
+        client = GithubOrgClient("test_org")
+        repos = client.public_repos()
+        self.assertEqual(repos, expected_repos)
+
+    def test_public_repos_url(self):
+        """Test _public_repos_url method returns the correct URL."""
+        client = GithubOrgClient("test_org")
+        self.assertEqual(client._public_repos_url, org_payload["repos_url"])
+
+    def test_org(self):
+        """Test org method returns the organization payload."""
+        client = GithubOrgClient("test_org")
+        self.assertEqual(client.org, org_payload)
+
+    def test_org_cached(self):
+        """Test org method is cached."""
+        client = GithubOrgClient("test_org")
+        # Call org twice and check if requests.get was called only once
+        client.org
+        client.org
+        self.assertEqual(client.org, org_payload)
+
+
+if __name__ == "__main__":
+    unittest.main()
+
 
