@@ -70,7 +70,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                 return cls.org_payload
             elif url == cls.org_payload["repos_url"]:
                 return cls.repos_payload
-            return None
+            return {}  # Return an empty dictionary instead of None
 
         cls.mock_get_json.side_effect = side_effect
 
@@ -92,3 +92,4 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
